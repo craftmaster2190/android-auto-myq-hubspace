@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="24dp"
+    android:background="@android:color/white"
+    tools:context="com.craftmaster2190.automyqhubspace.MainActivity">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="top|center"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <fragment
+            android:id="@+id/garageFragment"
+            android:name="com.craftmaster2190.automyqhubspace.GarageFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="top|center"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <fragment
+            android:id="@+id/frontDoorFragment"
+            android:name="com.craftmaster2190.automyqhubspace.FrontDoorFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

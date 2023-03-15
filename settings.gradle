@@ -6,5 +6,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "My Application"
+rootProject.name = "Auto MyQ HubSpace"
 include ':automotive'

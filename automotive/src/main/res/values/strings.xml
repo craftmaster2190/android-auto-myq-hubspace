@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Auto MyQ HubSpace</string>
+
+    <string name="garage_door">Garage Door</string>
+    <string name="front_door">Front Door</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
 </resources>

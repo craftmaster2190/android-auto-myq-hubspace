@@ -1,19 +1,21 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id "io.sentry.android.gradle" version "3.4.2"
 }
 
 android {
-    namespace 'com.craftmaster2190.myapplication'
+    namespace 'com.craftmaster2190.automyqhubspace'
     compileSdkVersion 33
     buildToolsVersion "33.0.1"
 
     defaultConfig {
-        applicationId "com.craftmaster2190.myapplication"
+        applicationId "com.craftmaster2190.automyqhubspace"
         minSdk 28
         targetSdk 33
         versionCode 1
-        versionName "1.0"
-        setProperty("archivesBaseName", "MyApplication-AndroidAuto-$versionName")
+        versionName "1.1"
+        setProperty("archivesBaseName", "AutoMyqHubspace-AndroidAuto-$versionName")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -24,13 +26,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'lib/auto', include: ['*.aar'])
     implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    def ktorVersion = "2.0.3"
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
     implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation "com.google.guava:guava:31.1-android"
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation("com.github.DiamondMiner88:myq:1.0.1")
 }
