@@ -9,3 +9,11 @@ fun <T>runOrSentry(func: () -> T) {
         Sentry.captureException(e)
     }
 }
+
+suspend fun <T>runSuspendOrSentry(func: suspend () -> T) {
+    try {
+        func()
+    } catch (e: Exception) {
+        Sentry.captureException(e)
+    }
+}

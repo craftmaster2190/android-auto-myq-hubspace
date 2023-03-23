@@ -3,15 +3,14 @@ package com.craftmaster2190.automyqhubspace
 import android.util.Log
 import com.github.diamondminer88.myq.MyQ
 import com.github.diamondminer88.myq.model.MyQDevice
-import com.google.common.base.Suppliers
 import io.ktor.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonPrimitive
+import java.time.Duration
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
 
 /**
  * Uses https://github.com/rushiiMachine/myq
@@ -24,19 +23,12 @@ class MyQClient {
     lateinit var username: String
     lateinit var password: String
 
-    private val myQ = MyQ()
+    private val myQ by lazy { MyQ() }
 
-    private val loggedInMyQ_ = Suppliers.memoizeWithExpiration({
-        suspend {
-            loginMyQ()
-            myQ
-        }
-    }, 60, TimeUnit.SECONDS)
-
-    private suspend fun loggedInMyQ(): MyQ {
-        return loggedInMyQ_.get()()
-    }
-
+    private val loggedInMyQ = SuspendCache(Duration.ofSeconds(60), {
+        loginMyQ()
+        myQ
+    })
 
     private suspend fun loginMyQ() {
         try {
@@ -64,42 +56,47 @@ class MyQClient {
     fun fetchGarageDoorState(): Future<GarageDoorState> {
         val future = CompletableFuture<GarageDoorState>()
         CoroutineScope(Dispatchers.IO).launch {
-            runWithLogin {
-                val doorState = (myQDevice()
-                    .state["door_state"] as JsonPrimitive).content
-                val garageDoorState = // GarageDoorState.CLOSED
-                    GarageDoorState.valueOf(doorState.toUpperCasePreservingASCIIRules())
+            runSuspendOrSentry {
+                runWithLogin {
+                    val doorState = (myQDevice()
+                        .state["door_state"] as JsonPrimitive).content
+                    val garageDoorState = // GarageDoorState.CLOSED
+                        GarageDoorState.valueOf(doorState.toUpperCasePreservingASCIIRules())
 
-                future.complete(garageDoorState)
+                    future.complete(garageDoorState)
+                }
             }
         }
         return future
     }
 
     private suspend fun myQDevice(): MyQDevice {
-        val devices = loggedInMyQ().fetchDevices()
+        val devices = loggedInMyQ.get().fetchDevices()
 //        Log.i(javaClass.simpleName, "DEVICES: $devices")
         return devices.first { it.deviceFamily == "garagedoor" }
     }
 
     fun setGarageDoorState(garageDoorState: GarageDoorState) {
         CoroutineScope(Dispatchers.IO).launch {
-            runWithLogin {
-                val myQDevice = myQDevice()
-                when (garageDoorState) {
-                    GarageDoorState.OPEN -> {
-                        loggedInMyQ().setGarageDoorState(myQDevice, true)
+            runSuspendOrSentry {
+                runWithLogin {
+                    val myQDevice = myQDevice()
+                    when (garageDoorState) {
+                        GarageDoorState.OPEN -> {
+                            loggedInMyQ.get().setGarageDoorState(myQDevice, true)
+                        }
+                        GarageDoorState.CLOSED -> {
+                            loggedInMyQ.get().setGarageDoorState(myQDevice, false)
+                        }
+                        else ->
+                            Log.e(
+                                javaClass.simpleName,
+                                "Unable to change garage door to $garageDoorState"
+                            )
                     }
-                    GarageDoorState.CLOSED -> {
-                        loggedInMyQ().setGarageDoorState(myQDevice, false)
-                    }
-                    else ->
-                        Log.e(
-                            javaClass.simpleName,
-                            "Unable to change garage door to $garageDoorState"
-                        )
                 }
             }
         }
     }
 }
+

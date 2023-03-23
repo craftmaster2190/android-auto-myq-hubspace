@@ -9,7 +9,6 @@
         android:id="@+id/lockName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="{{lockName}}"
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,12 +19,14 @@
         android:id="@+id/loading"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_marginTop="48sp"
         android:indeterminate="true"
-        android:minHeight="200sp"
+        android:minWidth="160dp"
+        android:minHeight="160dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/lockName"/>
 
     <ImageView
         android:id="@+id/locked"
@@ -48,5 +49,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="{{statusText}}"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/loading"
+        app:layout_constraintStart_toStartOf="@+id/loading"
+        app:layout_constraintTop_toTopOf="@+id/loading"
+        app:layout_constraintBottom_toBottomOf="@+id/loading" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

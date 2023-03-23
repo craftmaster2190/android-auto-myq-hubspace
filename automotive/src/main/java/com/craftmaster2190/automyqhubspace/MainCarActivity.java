@@ -5,10 +5,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.craftmaster2190.automyqhubspace.R;
-import com.craftmaster2190.automyqhubspace.databinding.ActivityMainVerticalBinding;
+import com.craftmaster2190.automyqhubspace.R; // Keep this line or else the dreaded "No new messages on this trip appears.
 import com.craftmaster2190.automyqhubspace.ui.login.AppCredentials;
-import com.craftmaster2190.automyqhubspace.ui.login.LoginActivity;
 import com.google.android.apps.auto.sdk.CarActivity;
 import com.google.android.apps.auto.sdk.CarUiController;
 
@@ -22,12 +20,12 @@ public class MainCarActivity extends CarActivity {
         ctrl.getStatusBarController().hideAppHeader();
         ctrl.getStatusBarController().hideTitle();
         ctrl.getMenuController().hideMenuButton();
-        setTheme(R.style.Theme_AutoMyqHubspace);
+        setTheme(com.craftmaster2190.automyqhubspace.R.style.Theme_AutoMyqHubspace);
 
         if (AppCredentials.fromContext(this) == null) {
-            setContentView(R.layout.activity_car_please_login);
+            setContentView(com.craftmaster2190.automyqhubspace.R.layout.activity_car_please_login);
         } else {
-            setContentView(R.layout.activity_main_horizontal);
+            setContentView(com.craftmaster2190.automyqhubspace.R.layout.activity_main_car_horizontal);
         }
 
         Log.i(this.getClass().getSimpleName(), "onCreate finish");

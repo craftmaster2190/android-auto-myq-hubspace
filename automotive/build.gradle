@@ -13,8 +13,9 @@ android {
         applicationId "com.craftmaster2190.automyqhubspace"
         minSdk 28
         targetSdk 33
-        versionCode 1
-        versionName "1.1"
+        def version = 2
+        versionCode version
+        versionName "1.${version}"
         setProperty("archivesBaseName", "AutoMyqHubspace-AndroidAuto-$versionName")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
