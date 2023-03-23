@@ -5,7 +5,11 @@ buildscript {
         gradlePluginPortal()
     }
 
-    ext.kotlin_version = '1.4.10'
+    ext{
+        VERSION_CODE = 2
+        VERSION_NAME = "1.${VERSION_CODE}"
+        kotlin_version = '1.4.10'
+    }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.3.1'

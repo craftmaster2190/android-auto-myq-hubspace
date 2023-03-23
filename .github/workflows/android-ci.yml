@@ -1,0 +1,86 @@
+name: Android CI
+
+env:
+  # The name of the main module repository
+  main_project_module: automotive
+
+on:
+  # Triggers the workflow on push or pull request events but only for default and protected branches
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  buildAndReleaseApk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout latest code
+        uses: actions/checkout@v1
+
+      # Set Current Date As Env Variable
+#      - name: Set current date as env variable
+#        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      # Set Repository Name As Env Variable
+#      - name: Set repository name as env variable
+#        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Permit Gradle wrapper to execute
+        run: chmod +x ./gradlew
+
+      # Run Tests Build
+#      - name: Run gradle tests
+#        run: ./gradlew test
+
+      # Run Build Project
+      - name: Build gradle project
+        run: ./gradlew build
+
+      # Create APK Debug
+#      - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
+#        run: ./gradlew assembleDebug
+
+      # Create APK Release
+#      - name: Build apk release project (APK) - ${{ env.main_project_module }} module
+#        run: ./gradlew assemble
+
+      # Create Bundle AAB Release
+      # Noted for main module build [main_project_module]:bundleRelease
+#      - name: Build app bundle release (AAB) - ${{ env.main_project_module }} module
+#        run: ./gradlew ${{ env.main_project_module }}:bundleRelease
+
+      - name: Build apk signed release (APK) - ${{ env.main_project_module }} module
+        env:
+          ANDROID_RELEASE_KEY_BASE64: ${{ secrets.ANDROID_RELEASE_KEY_BASE64 }}
+          ANDROID_RELEASE_STOREPASS: ${{ secrets.ANDROID_RELEASE_STOREPASS }}
+          ANDROID_RELEASE_ALIAS: ${{ secrets.ANDROID_RELEASE_ALIAS }}
+        run: |
+          ANDROID_RELEASE_KEY="android-release-key.jks"
+          echo "${ANDROID_RELEASE_KEY_BASE64}" | base64 --decode > "${ANDROID_RELEASE_KEY}"
+          ANDROID_RELEASE_KEY="$(realpath "${ANDROID_RELEASE_KEY}")"
+          ./gradlew ${{ env.main_project_module }}:packageReleaseUniversalApk \
+            -Pandroid.injected.signing.store.file="${ANDROID_RELEASE_KEY}" \
+            -Pandroid.injected.signing.store.password="${ANDROID_RELEASE_STOREPASS}" \
+            -Pandroid.injected.signing.key.alias="${ANDROID_RELEASE_ALIAS}" \
+            -Pandroid.injected.signing.key.password="${ANDROID_RELEASE_STOREPASS}"
+          echo "app_version=$(./gradlew --quiet printAppVersion)" >> $GITHUB_ENV
+
+      - name: Release APK to Github - ${{ env.main_project_module }} module
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "automotive/build/outputs/universal_apk/release/*.apk"
+          allowUpdates: false
+          tag: "v${{ env.app_version }}"
+          # bodyFile: "body.md"
