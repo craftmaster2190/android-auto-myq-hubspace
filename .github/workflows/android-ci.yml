@@ -77,7 +77,7 @@ jobs:
             -Pandroid.injected.signing.key.password="${ANDROID_RELEASE_STOREPASS}"
           echo "app_version=$(./gradlew --quiet printAppVersion)" >> $GITHUB_ENV
 
-      - name: Release APK to Github - ${{ env.main_project_module }} module
+      - name: Release APK to Github - ${{ env.main_project_module }} module v${{ env.app_version }}
         uses: ncipollo/release-action@v1
         with:
           artifacts: "automotive/build/outputs/universal_apk/release/*.apk"

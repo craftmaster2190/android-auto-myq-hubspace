@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 class GarageFragment : Fragment() {
     private val myqClient by lazy {
@@ -76,39 +75,41 @@ class GarageFragment : Fragment() {
 
     fun updateButton(garageDoorState: MyQClient.GarageDoorState?) {
         CoroutineScope(Dispatchers.Main).launch {
-            when (garageDoorState) {
-                MyQClient.GarageDoorState.OPEN -> {
-                    binding!!.lockButton.loading.visibility = View.GONE
-                    binding!!.lockButton.unlocked.visibility = View.VISIBLE
-                    binding!!.lockButton.locked.visibility = View.GONE
-                    binding!!.lockButton.statusText.visibility = View.GONE
-                }
-                MyQClient.GarageDoorState.CLOSED -> {
-                    binding!!.lockButton.loading.visibility = View.GONE
-                    binding!!.lockButton.unlocked.visibility = View.GONE
-                    binding!!.lockButton.locked.visibility = View.VISIBLE
-                    binding!!.lockButton.statusText.visibility = View.GONE
-                }
-                MyQClient.GarageDoorState.OPENING -> {
-                    binding!!.lockButton.loading.visibility = View.VISIBLE
-                    binding!!.lockButton.unlocked.visibility = View.GONE
-                    binding!!.lockButton.locked.visibility = View.GONE
-                    binding!!.lockButton.statusText.visibility = View.VISIBLE
-                    binding!!.lockButton.statusText.text = "Opening"
-                }
-                MyQClient.GarageDoorState.CLOSING -> {
-                    binding!!.lockButton.loading.visibility = View.VISIBLE
-                    binding!!.lockButton.unlocked.visibility = View.GONE
-                    binding!!.lockButton.locked.visibility = View.GONE
-                    binding!!.lockButton.statusText.visibility = View.VISIBLE
-                    binding!!.lockButton.statusText.text = "Closing"
-                }
-                else  -> {
-                    binding!!.lockButton.loading.visibility = View.VISIBLE
-                    binding!!.lockButton.unlocked.visibility = View.GONE
-                    binding!!.lockButton.locked.visibility = View.GONE
-                    binding!!.lockButton.statusText.visibility = View.VISIBLE
-                    binding!!.lockButton.statusText.text = "Loading"
+            binding?.let {
+                when (garageDoorState) {
+                    MyQClient.GarageDoorState.OPEN -> {
+                        binding!!.lockButton.loading.visibility = View.GONE
+                        binding!!.lockButton.unlocked.visibility = View.VISIBLE
+                        binding!!.lockButton.locked.visibility = View.GONE
+                        binding!!.lockButton.statusText.visibility = View.GONE
+                    }
+                    MyQClient.GarageDoorState.CLOSED -> {
+                        binding!!.lockButton.loading.visibility = View.GONE
+                        binding!!.lockButton.unlocked.visibility = View.GONE
+                        binding!!.lockButton.locked.visibility = View.VISIBLE
+                        binding!!.lockButton.statusText.visibility = View.GONE
+                    }
+                    MyQClient.GarageDoorState.OPENING -> {
+                        binding!!.lockButton.loading.visibility = View.VISIBLE
+                        binding!!.lockButton.unlocked.visibility = View.GONE
+                        binding!!.lockButton.locked.visibility = View.GONE
+                        binding!!.lockButton.statusText.visibility = View.VISIBLE
+                        binding!!.lockButton.statusText.text = "Opening"
+                    }
+                    MyQClient.GarageDoorState.CLOSING -> {
+                        binding!!.lockButton.loading.visibility = View.VISIBLE
+                        binding!!.lockButton.unlocked.visibility = View.GONE
+                        binding!!.lockButton.locked.visibility = View.GONE
+                        binding!!.lockButton.statusText.visibility = View.VISIBLE
+                        binding!!.lockButton.statusText.text = "Closing"
+                    }
+                    else -> {
+                        binding!!.lockButton.loading.visibility = View.VISIBLE
+                        binding!!.lockButton.unlocked.visibility = View.GONE
+                        binding!!.lockButton.locked.visibility = View.GONE
+                        binding!!.lockButton.statusText.visibility = View.VISIBLE
+                        binding!!.lockButton.statusText.text = "Loading"
+                    }
                 }
             }
         }

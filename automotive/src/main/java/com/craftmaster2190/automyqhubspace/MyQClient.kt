@@ -26,25 +26,19 @@ class MyQClient {
     private val myQ by lazy { MyQ() }
 
     private val loggedInMyQ = SuspendCache(Duration.ofSeconds(60), {
-        loginMyQ()
+        try {
+            myQ.getRefreshToken().let { myQ.login(it) }
+        } catch (ignored: Throwable) { // Sometimes is Error and sometimes is a normal Exception
+            myQ.login(username, password)
+        }
         myQ
     })
 
-    private suspend fun loginMyQ() {
-        try {
-            myQ.getRefreshToken().let { myQ.login(it) }
-        } catch (ignored: Error) {
-            myQ.login(username, password)
-        } catch (ignored: Exception) {
-            myQ.login(username, password)
-        }
-    }
-
-    private suspend fun runWithLogin(func: suspend () -> Unit) {
+    private suspend fun runOrRetryWithLogin(func: suspend () -> Unit) {
         try {
             func()
         } catch (ignored: Error) {
-            loginMyQ()
+            loggedInMyQ.invalidate()
             func()
         }
     }
@@ -57,7 +51,7 @@ class MyQClient {
         val future = CompletableFuture<GarageDoorState>()
         CoroutineScope(Dispatchers.IO).launch {
             runSuspendOrSentry {
-                runWithLogin {
+                runOrRetryWithLogin {
                     val doorState = (myQDevice()
                         .state["door_state"] as JsonPrimitive).content
                     val garageDoorState = // GarageDoorState.CLOSED
@@ -79,20 +73,21 @@ class MyQClient {
     fun setGarageDoorState(garageDoorState: GarageDoorState) {
         CoroutineScope(Dispatchers.IO).launch {
             runSuspendOrSentry {
-                runWithLogin {
+                runOrRetryWithLogin {
                     val myQDevice = myQDevice()
                     when (garageDoorState) {
                         GarageDoorState.OPEN -> {
                             loggedInMyQ.get().setGarageDoorState(myQDevice, true)
                         }
+                        GarageDoorState.OPENING -> {
+                            loggedInMyQ.get().setGarageDoorState(myQDevice, true)
+                        }
                         GarageDoorState.CLOSED -> {
                             loggedInMyQ.get().setGarageDoorState(myQDevice, false)
                         }
-                        else ->
-                            Log.e(
-                                javaClass.simpleName,
-                                "Unable to change garage door to $garageDoorState"
-                            )
+                        GarageDoorState.CLOSING -> {
+                            loggedInMyQ.get().setGarageDoorState(myQDevice, false)
+                        }
                     }
                 }
             }

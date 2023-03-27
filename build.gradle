@@ -5,8 +5,8 @@ buildscript {
         gradlePluginPortal()
     }
 
-    ext{
-        VERSION_CODE = 2
+    ext {
+        VERSION_CODE = 3
         VERSION_NAME = "1.${VERSION_CODE}"
         kotlin_version = '1.4.10'
     }

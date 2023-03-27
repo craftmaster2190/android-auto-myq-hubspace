@@ -74,39 +74,41 @@ class FrontDoorFragment : Fragment() {
 
     fun updateButton(frontDoorState: HubSpaceClient.FrontDoorState?) {
         CoroutineScope(Dispatchers.Main).launch {
-            when (frontDoorState) {
-                HubSpaceClient.FrontDoorState.UNLOCKED -> {
-                    binding!!.lockButton.loading.visibility = View.GONE
-                    binding!!.lockButton.unlocked.visibility = View.VISIBLE
-                    binding!!.lockButton.locked.visibility = View.GONE
-                    binding!!.lockButton.statusText.visibility = View.GONE
-                }
-                HubSpaceClient.FrontDoorState.LOCKED -> {
-                    binding!!.lockButton.loading.visibility = View.GONE
-                    binding!!.lockButton.unlocked.visibility = View.GONE
-                    binding!!.lockButton.locked.visibility = View.VISIBLE
-                    binding!!.lockButton.statusText.visibility = View.GONE
-                }
-                HubSpaceClient.FrontDoorState.LOCKING -> {
-                    binding!!.lockButton.loading.visibility = View.VISIBLE
-                    binding!!.lockButton.unlocked.visibility = View.GONE
-                    binding!!.lockButton.locked.visibility = View.GONE
-                    binding!!.lockButton.statusText.visibility = View.VISIBLE
-                    binding!!.lockButton.statusText.text = "Locking"
-                }
-                HubSpaceClient.FrontDoorState.UNLOCKING -> {
-                    binding!!.lockButton.loading.visibility = View.VISIBLE
-                    binding!!.lockButton.unlocked.visibility = View.GONE
-                    binding!!.lockButton.locked.visibility = View.GONE
-                    binding!!.lockButton.statusText.visibility = View.VISIBLE
-                    binding!!.lockButton.statusText.text = "Unlocking"
-                }
-                else -> {
-                    binding!!.lockButton.loading.visibility = View.VISIBLE
-                    binding!!.lockButton.unlocked.visibility = View.GONE
-                    binding!!.lockButton.locked.visibility = View.GONE
-                    binding!!.lockButton.statusText.visibility = View.VISIBLE
-                    binding!!.lockButton.statusText.text = "Loading"
+            binding?.let {
+                when (frontDoorState) {
+                    HubSpaceClient.FrontDoorState.UNLOCKED -> {
+                        binding!!.lockButton.loading.visibility = View.GONE
+                        binding!!.lockButton.unlocked.visibility = View.VISIBLE
+                        binding!!.lockButton.locked.visibility = View.GONE
+                        binding!!.lockButton.statusText.visibility = View.GONE
+                    }
+                    HubSpaceClient.FrontDoorState.LOCKED -> {
+                        binding!!.lockButton.loading.visibility = View.GONE
+                        binding!!.lockButton.unlocked.visibility = View.GONE
+                        binding!!.lockButton.locked.visibility = View.VISIBLE
+                        binding!!.lockButton.statusText.visibility = View.GONE
+                    }
+                    HubSpaceClient.FrontDoorState.LOCKING -> {
+                        binding!!.lockButton.loading.visibility = View.VISIBLE
+                        binding!!.lockButton.unlocked.visibility = View.GONE
+                        binding!!.lockButton.locked.visibility = View.GONE
+                        binding!!.lockButton.statusText.visibility = View.VISIBLE
+                        binding!!.lockButton.statusText.text = "Locking"
+                    }
+                    HubSpaceClient.FrontDoorState.UNLOCKING -> {
+                        binding!!.lockButton.loading.visibility = View.VISIBLE
+                        binding!!.lockButton.unlocked.visibility = View.GONE
+                        binding!!.lockButton.locked.visibility = View.GONE
+                        binding!!.lockButton.statusText.visibility = View.VISIBLE
+                        binding!!.lockButton.statusText.text = "Unlocking"
+                    }
+                    else -> {
+                        binding!!.lockButton.loading.visibility = View.VISIBLE
+                        binding!!.lockButton.unlocked.visibility = View.GONE
+                        binding!!.lockButton.locked.visibility = View.GONE
+                        binding!!.lockButton.statusText.visibility = View.VISIBLE
+                        binding!!.lockButton.statusText.text = "Loading"
+                    }
                 }
             }
         }
