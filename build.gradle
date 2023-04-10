@@ -6,7 +6,7 @@ buildscript {
     }
 
     ext {
-        VERSION_CODE = 3
+        VERSION_CODE = 4
         VERSION_NAME = "1.${VERSION_CODE}"
         kotlin_version = '1.4.10'
     }

@@ -1,6 +1,5 @@
 package com.craftmaster2190.automyqhubspace
 
-import android.util.Log
 import com.github.diamondminer88.myq.MyQ
 import com.github.diamondminer88.myq.model.MyQDevice
 import io.ktor.util.*
@@ -22,15 +21,22 @@ class MyQClient {
 
     lateinit var username: String
     lateinit var password: String
-
-    private val myQ by lazy { MyQ() }
+    var refreshToken: String? = null
 
     private val loggedInMyQ = SuspendCache(Duration.ofSeconds(60), {
+        val myQ = MyQ()
+        var loggedIn = false
         try {
-            myQ.getRefreshToken().let { myQ.login(it) }
-        } catch (ignored: Throwable) { // Sometimes is Error and sometimes is a normal Exception
-            myQ.login(username, password)
+            if (refreshToken != null) {
+                myQ.login(refreshToken!!)
+                loggedIn = true
+            }
+        } catch (ignored: Throwable) {
         }
+        if (!loggedIn) {
+            myQ.apply { login(username, password) }
+        }
+        refreshToken = myQ.getRefreshToken()
         myQ
     })
 

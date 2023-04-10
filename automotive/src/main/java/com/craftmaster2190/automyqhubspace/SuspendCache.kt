@@ -1,5 +1,7 @@
 package com.craftmaster2190.automyqhubspace
 
+import io.sentry.Hint
+import io.sentry.Sentry
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.time.Duration
@@ -20,7 +22,13 @@ class SuspendCache<T>(
             ) > duration
         ) {
             withContext(suspendGuard) {
-                cachedValue = supplier()
+                try {
+                    cachedValue = supplier()
+                    lastFetch = nowFunction()
+                } catch (e: Throwable) {
+                    invalidate()
+                    throw e
+                }
             }
         }
         return cachedValue!!
